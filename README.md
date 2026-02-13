@@ -38,11 +38,13 @@ Rep counter updates instantly
 Feedback displayed + spoken aloud
 Weekly plan shown on the dashboard
 ---Flowchart
+<img width="1024" height="1024" alt="Flowchart" src="https://github.com/user-attachments/assets/117ed01e-e343-4188-afe2-f68d3fcdbcea" />
 
 Tech Stack
 | Component | Technology |
 
-|----------|------------|
+
+|------------|
 
 | Pose Estimation | YOLOv8 Pose (Ultralytics) |
 
