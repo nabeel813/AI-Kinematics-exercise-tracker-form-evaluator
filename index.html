@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Kinematics Trainer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>AI Kinematics</h1>
+    <p class="subtitle">Real-Time Pose-Based Push-Up & Sit-Up Analysis</p>
+</header>
+
+<div class="container">
+
+    <!-- Webcam -->
+    <div class="video-section">
+        <img src="{{ url_for('video_feed') }}" id="webcam">
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-section">
+
+        <!-- Metrics -->
+        <div class="metrics-box">
+            <h2>Live Performance</h2>
+
+            <div class="metric"><span>Total</span><b id="total">0</b></div>
+            <div class="metric"><span>Standard</span><b id="standard">0</b></div>
+            <div class="metric"><span>Wide</span><b id="wide">0</b></div>
+            <div class="metric"><span>Sit-ups</span><b id="situp">0</b></div>
+            <div class="metric"><span>Avg Rep Time</span><b id="avg">0.0s</b></div>
+            <div class="feedback" id="feedback">Waiting…</div>
+        </div>
+
+        <img src="{{ url_for('static', filename='pushup.png') }}" width="550">
+
+        <!-- User Profile -->
+        <h2>User Profile</h2>
+        <form method="POST" action="/plan">
+            <label>Age</label>
+            <input type="number" name="age" required>
+
+            <label>Weight (kg)</label>
+            <input type="number" name="weight" required>
+
+            <button type="submit">Generate Weekly Plan</button>
+        </form>
+
+        <!-- Weekly Plan -->
+        {% if weekly_pushup_plan %}
+        <div class="plan-box">
+            <h2>Weekly Push-up Plan</h2>
+            <ul>
+                {% for reps in weekly_pushup_plan %}
+                <li>Day {{ loop.index }} → {{ reps }} push-ups</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Weekly Sit-up Plan</h2>
+            <ul>
+                {% for reps in weekly_situp_plan %}
+                <li>Day {{ loop.index }} → {{ reps }} sit-ups</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h2>Exercise Guidelines</h2>
+            <p>✔ Maintain straight posture during push-ups</p>
+            <p>✔ Controlled tempo — no bouncing</p>
+            <p>✔ Sit-ups counted only when lying correctly</p>
+            <h2>Pushup Guidelines</h2>
+            <p>Form: Keep hands slightly wider than shoulder-width, back straight, and core/glutes engaged.</p>
+            <p>Motion: Lower your chest to about 1-2 inches from the floor, keeping elbows at a 45-degree angle to the body.</p>
+            <p>Breathing: Inhale while lowering, exhale while pushing up.</p>
+            <p>Modifications: Use knee pushups or incline pushups (hands on a bench) for beginners.</p>
+            <p>Progression: Increase difficulty with decline pushups (feet elevated) or diamond pushups.</p>
+            <p>Frequency: 3-4 times a week, allowing at least 48 hours of recovery for muscles.</p> 
+            <h2>Situp Guidelines</h2>
+            <p>Form: Lie on your back with knees bent, feet flat, and hands behind your head or crossed on your chest.</p>
+            <p>Motion: Engage abs to lift your torso until elbows touch knees, then lower under control.</p>
+            <p>Safety: Do not pull on your neck; focus on using abdominal muscles.</p>
+            <p>Progression: Increase reps, decrease rest time between sets, or use weighted situps.</p>
+            <p>Alternatives: To protect the lower back, prioritize planks or crunches.</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function updateMetrics() {
+    fetch('/metrics')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("total").innerText = data.total_reps;
+            document.getElementById("standard").innerText = data.standard_reps;
+            document.getElementById("wide").innerText = data.wide_reps;
+            document.getElementById("situp").innerText = data.situp_reps;
+            document.getElementById("avg").innerText = data.avg_time + "s";
+            document.getElementById("feedback").innerText = data.feedback;
+        });
+}
+
+setInterval(updateMetrics, 1000);
+</script>
+
+</body>
+</html>
